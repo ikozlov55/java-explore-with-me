@@ -22,25 +22,22 @@ public class StatsClient {
     private final ParameterizedTypeReference<List<StatViewDto>> statsListTypeRef = new ParameterizedTypeReference<>() {
     };
     private final RestTemplate restTemplate;
-    private final HttpHeaders headers;
 
     @Autowired
     public StatsClient(@Value("${stats-server.url}") String baseUrl) {
         restTemplate = new RestTemplate();
         restTemplate.setUriTemplateHandler(new DefaultUriBuilderFactory(baseUrl));
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
     }
 
     public ResponseEntity<Object> saveEndpointHit(EndpointHitDto endpointHitDto) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<EndpointHitDto> request = new HttpEntity<>(endpointHitDto, headers);
         return restTemplate.postForEntity(HIT_PATH, request, Object.class);
     }
 
     public ResponseEntity<List<StatViewDto>> getStats(LocalDateTime start, LocalDateTime end, List<String> uris,
                                                       boolean unique) {
-        HttpEntity<EndpointHitDto> request = new HttpEntity<>(null, headers);
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromPath(STATS_PATH)
                 .queryParam("start", start)
@@ -51,7 +48,7 @@ public class StatsClient {
         }
         return restTemplate.exchange(builder.toUriString(),
                 HttpMethod.GET,
-                request,
+                null,
                 statsListTypeRef);
     }
 }

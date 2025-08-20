@@ -8,9 +8,9 @@ public final class EndpointHitMapper {
 
     public static EndpointHit toModel(EndpointHitDto endpointHitDto) {
         return new EndpointHit(null,
-                endpointHitDto.getApp(),
-                endpointHitDto.getUri(),
-                endpointHitDto.getIp(),
-                endpointHitDto.getTimestamp());
+                endpointHitDto.app(),
+                endpointHitDto.uri(),
+                endpointHitDto.ip(),
+                endpointHitDto.timestamp());
     }
 }
