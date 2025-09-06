@@ -1,6 +1,6 @@
 package ru.practicum.ewm.event.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public record LocationDto(@NotBlank Double lat, @NotBlank Double lon) {
+public record LocationDto(@NotNull Double lat, @NotNull Double lon) {
 }
