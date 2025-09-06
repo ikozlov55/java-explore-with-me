@@ -20,6 +20,7 @@ public class ErrorHandler {
     public static final String NOT_FOUND_REASON = "The required object was not found";
     public static final String DATA_INTEGRITY_VIOLATION_REASON = "Integrity constraint has been violated";
     public static final String FORBIDDEN_REASON = "For the requested operation the conditions are not met.";
+    public static final String SERVER_ERROR_REASON = "Something went wrong";
 
     @ExceptionHandler({
             ValidationException.class,
@@ -69,6 +70,15 @@ public class ErrorHandler {
     public ErrorResponse handleForbidden(Exception e) {
         return new ErrorResponse(HttpStatus.FORBIDDEN.name(),
                 FORBIDDEN_REASON,
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleInternalError(Throwable e) {
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.name(),
+                SERVER_ERROR_REASON,
                 e.getMessage(),
                 LocalDateTime.now()
         );
