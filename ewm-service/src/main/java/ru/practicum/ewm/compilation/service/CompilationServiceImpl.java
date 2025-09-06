@@ -45,7 +45,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto createCompilation(NewCompilationDto compilationDto) {
         List<Event> events = compilationDto.events() != null
-                ? compilationDto.events().stream().map(eventRepository::findByIdOrThrow).toList()
+                ? eventRepository.findByIdIn(compilationDto.events())
                 : List.of();
         Compilation compilation = CompilationMapper.toModel(compilationDto, events);
         return CompilationMapper.toDto(compilationRepository.save(compilation), viewService);
