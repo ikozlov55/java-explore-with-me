@@ -10,13 +10,16 @@ import ru.practicum.ewm.compilation.dto.NewCompilationDto;
 import ru.practicum.ewm.compilation.dto.UpdateCompilationDto;
 import ru.practicum.ewm.compilation.model.Compilation;
 import ru.practicum.ewm.compilation.repository.CompilationRepository;
+import ru.practicum.ewm.core.exception.NotFoundException;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.event.service.ViewService;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +45,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto createCompilation(NewCompilationDto compilationDto) {
         List<Event> events = compilationDto.events() != null
-                ? compilationDto.events().stream().map(eventRepository::findByIdOrThrow).toList()
+                ? eventRepository.findByIdIn(compilationDto.events())
                 : List.of();
         Compilation compilation = CompilationMapper.toModel(compilationDto, events);
         return CompilationMapper.toDto(compilationRepository.save(compilation), viewService);
@@ -64,12 +67,13 @@ public class CompilationServiceImpl implements CompilationService {
             compilation.setTitle(compilationDto.title());
         }
         if (compilationDto.events() != null) {
-            List<Event> events = new ArrayList<>();
-            for (Long eventId : compilationDto.events()) {
-                Event event = eventRepository.findByIdOrThrow(eventId);
-                events.add(event);
+            List<Event> events = eventRepository.findByIdIn(compilationDto.events());
+            Set<Long> diff = new HashSet<>(compilationDto.events());
+            diff.removeAll(events.stream().map(Event::getId).collect(Collectors.toSet()));
+            if (!diff.isEmpty()) {
+                String msg = String.format("Events with ids: %s not found", diff);
+                throw new NotFoundException(msg);
             }
-
             compilation.setEvents(events);
         }
 

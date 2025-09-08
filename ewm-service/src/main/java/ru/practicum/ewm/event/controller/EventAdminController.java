@@ -1,8 +1,11 @@
 package ru.practicum.ewm.event.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.UpdateEventDto;
@@ -17,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
+@Validated
 public class EventAdminController {
     private final EventAdminService eventService;
 
@@ -30,8 +34,8 @@ public class EventAdminController {
                                        @RequestParam(required = false)
                                        @DateTimeFormat(pattern = Constants.DATE_TIME_FORMAT)
                                        LocalDateTime rangeEnd,
-                                       @RequestParam(defaultValue = "0") int from,
-                                       @RequestParam(defaultValue = "10") int size) {
+                                       @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                       @Positive @RequestParam(defaultValue = "10") int size) {
         return eventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 

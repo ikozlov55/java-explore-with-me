@@ -31,4 +31,7 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
     List<Event> findEventsInRadius(@Param("lat") double lat,
                                    @Param("lon") double lon,
                                    @Param("radius") int radius);
+
+    List<Event> findByIdIn(List<Long> eventIds);
+
 }

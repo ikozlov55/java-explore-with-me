@@ -1,5 +1,6 @@
 package ru.practicum.ewm.compilation.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.compilation.model.Compilation;
 import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.event.model.Event;
@@ -7,9 +8,8 @@ import ru.practicum.ewm.event.service.ViewService;
 
 import java.util.List;
 
+@UtilityClass
 public final class CompilationMapper {
-    private CompilationMapper() {
-    }
 
     public static Compilation toModel(NewCompilationDto compilationDto, List<Event> events) {
         return new Compilation(null,
