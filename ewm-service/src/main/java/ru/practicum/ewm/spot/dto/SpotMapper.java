@@ -1,12 +1,11 @@
 package ru.practicum.ewm.spot.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.event.dto.LocationDto;
 import ru.practicum.ewm.spot.model.Spot;
 
+@UtilityClass
 public final class SpotMapper {
-    private SpotMapper() {
-
-    }
 
     public static Spot toModel(NewSpotDto spotDto) {
         return new Spot(null,
