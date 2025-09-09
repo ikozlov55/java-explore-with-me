@@ -18,7 +18,7 @@ import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.model.EventStateAction;
 import ru.practicum.ewm.stats.dto.Constants;
 import ru.practicum.ewm.testutils.EwmServiceApi;
-import ru.practicum.ewm.testutils.NewEventDtoBuilder;
+import ru.practicum.ewm.testutils.builders.NewEvent;
 import ru.practicum.ewm.testutils.TestConfig;
 import ru.practicum.ewm.testutils.TestData;
 import ru.practicum.ewm.user.dto.UserDto;
@@ -155,7 +155,7 @@ public class EventTest {
         long userId = 9999;
         String message = String.format("User with id=%d was not found", userId);
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id()).build();
+        NewEventDto eventDto = NewEvent.builder().category(category.id()).build().dto();
 
         serviceApi.createUserEvent(userId, eventDto)
                 .andExpect(status().isNotFound())
@@ -168,7 +168,7 @@ public class EventTest {
         long categoryId = 9999;
         String message = String.format("Category with id=%d was not found", categoryId);
         CategoryDto category = new CategoryDto(categoryId, null);
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id()).build();
+        NewEventDto eventDto = NewEvent.builder().category(category.id()).build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isNotFound())
@@ -179,9 +179,8 @@ public class EventTest {
     void annotationIsRequiredOnCreateUserEvent() throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
-                .annotation(null)
-                .build();
+        NewEventDto eventDto = NewEvent.builder().category(category.id())
+                .annotation(null).build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -194,9 +193,8 @@ public class EventTest {
     void annotationHasLimitsOnCreateUserEvent(int length) throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
-                .annotation(faker.lorem().characters(length))
-                .build();
+        NewEventDto eventDto = NewEvent.builder().category(category.id())
+                .annotation(faker.lorem().characters(length)).build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -207,7 +205,7 @@ public class EventTest {
     @Test
     void categoryIsRequiredOnCreateUserEvent() throws Exception {
         UserDto user = testData.randomUser();
-        NewEventDto eventDto = new NewEventDtoBuilder(null).build();
+        NewEventDto eventDto = NewEvent.builder().build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -220,9 +218,11 @@ public class EventTest {
     void descriptionIsRequiredOnCreateUserEvent() throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
+        NewEventDto eventDto = NewEvent.builder()
+                .category(category.id())
                 .description(null)
-                .build();
+                .build().dto();
+
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -235,9 +235,10 @@ public class EventTest {
     void descriptionHasLimitsOnCreateUserEvent(int length) throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
+        NewEventDto eventDto = NewEvent.builder()
+                .category(category.id())
                 .description(faker.lorem().characters(length))
-                .build();
+                .build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -249,9 +250,10 @@ public class EventTest {
     void eventDateIsRequiredOnCreateUserEvent() throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
+        NewEventDto eventDto = NewEvent.builder()
+                .category(category.id())
                 .eventDate(null)
-                .build();
+                .build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -263,9 +265,10 @@ public class EventTest {
     void eventDateMustBe2HoursInFutureOnCreateUserEvent() throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
+        NewEventDto eventDto = NewEvent.builder()
+                .category(category.id())
                 .eventDate(LocalDateTime.now().plusMinutes(119))
-                .build();
+                .build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -277,9 +280,10 @@ public class EventTest {
     void locationIsRequiredOnCreateUserEvent() throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
+        NewEventDto eventDto = NewEvent.builder()
+                .category(category.id())
                 .location(null)
-                .build();
+                .build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -291,9 +295,10 @@ public class EventTest {
     void titleIsRequiredOnCreateUserEvent() throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
+        NewEventDto eventDto = NewEvent.builder()
+                .category(category.id())
                 .title(null)
-                .build();
+                .build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -306,9 +311,10 @@ public class EventTest {
     void titleHasLimitsOnCreateUserEvent(int length) throws Exception {
         UserDto user = testData.randomUser();
         CategoryDto category = testData.randomCategory();
-        NewEventDto eventDto = new NewEventDtoBuilder(category.id())
+        NewEventDto eventDto = NewEvent.builder()
+                .category(category.id())
                 .title(faker.lorem().characters(length))
-                .build();
+                .build().dto();
 
         serviceApi.createUserEvent(user.id(), eventDto)
                 .andExpect(status().isBadRequest())
@@ -322,7 +328,7 @@ public class EventTest {
         CategoryDto category = testData.randomCategory();
         CategoryDto newCategory = testData.randomCategory();
         EventFullDto event = testData.randomEvent(user, category);
-        NewEventDto updateData = new NewEventDtoBuilder(newCategory.id()).build();
+        NewEventDto updateData = NewEvent.builder().category(newCategory.id()).build().dto();
         UpdateEventDto updateEventDto = new UpdateEventDto(
                 updateData.title(),
                 updateData.description(),
@@ -391,7 +397,7 @@ public class EventTest {
         CategoryDto category = testData.randomCategory();
         CategoryDto newCategory = testData.randomCategory();
         EventFullDto event = testData.randomEvent(user, category);
-        NewEventDto updateData = new NewEventDtoBuilder(newCategory.id()).build();
+        NewEventDto updateData = NewEvent.builder().category(newCategory.id()).build().dto();
         UpdateEventDto updateEventDto = new UpdateEventDto(
                 updateData.title(),
                 updateData.description(),

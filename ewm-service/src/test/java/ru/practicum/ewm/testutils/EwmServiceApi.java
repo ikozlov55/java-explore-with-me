@@ -13,6 +13,8 @@ import ru.practicum.ewm.event.dto.UpdateEventDto;
 import ru.practicum.ewm.event.model.EventState;
 import ru.practicum.ewm.event.model.EventsSort;
 import ru.practicum.ewm.request.dto.RequestStatusUpdateRequest;
+import ru.practicum.ewm.spot.dto.NewSpotDto;
+import ru.practicum.ewm.spot.dto.UpdateSpotDto;
 import ru.practicum.ewm.user.dto.UserDto;
 
 import java.time.LocalDateTime;
@@ -155,5 +157,35 @@ public class EwmServiceApi {
 
     public ResultActions cancelRequest(long userId, long requestId) throws Exception {
         return mockMvc.perform(patch("/user/{userId}/requests/{requestId}/cancel", userId, requestId));
+    }
+
+    public ResultActions createSpot(NewSpotDto spotDto) throws Exception {
+        return mockMvc.perform(post("/admin/spots")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(spotDto)));
+    }
+
+    public ResultActions updateSpot(long spotId, UpdateSpotDto spotDto) throws Exception {
+        return mockMvc.perform(patch("/admin/spots/{spotId}", spotId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(spotDto)));
+    }
+
+    public ResultActions deleteSpot(long spotId) throws Exception {
+        return mockMvc.perform(delete("/admin/spots/{spotId}", spotId));
+    }
+
+    public ResultActions getSpots(String text, int from, int size) throws Exception {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/spots")
+                .queryParam("text", text)
+                .queryParam("from", from)
+                .queryParam("size", size);
+        return mockMvc.perform(get(builder.toUriString()));
+    }
+
+    public ResultActions getSpotEvents(long spotId) throws Exception {
+        return mockMvc.perform(get("/spots/{spotId}/events", spotId));
     }
 }
